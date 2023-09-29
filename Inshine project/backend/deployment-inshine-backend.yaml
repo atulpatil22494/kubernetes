@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: development-inshine-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: inshine-backend
+      app: inshine-backend
+    
+  template:
+    metadata:
+      name: inshine-backend
+      labels:
+        name: inshine-backend
+        app: inshine-backend
+    spec:
+      containers:
+        - name: inshine-backend
+          image: atulpatil22/backend-springboot
+          # imagePullPolicy: "IfNotPresent"
+          
+          ports:
+            - containerPort: 8081
+
+          env:   # Setting Environmental Variables
+          
+             - name: DB_HOST   # Setting Database host address
+               value: inshine-database
+               
+             - name: DB_NAME  # Setting Database name
+               value: inshine
+               
+             - name: DB_USERNAME  # Setting Database username
+               value: root
+               
+             - name: DB_PASSWORD # Setting Database password
+               value: root

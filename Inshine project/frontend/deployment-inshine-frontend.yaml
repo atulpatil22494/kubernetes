@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-inshine-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: inshine-frontend
+  template:
+    metadata:
+      labels:
+        name: inshine-frontend
+        app: inshine-frontend
+    spec:
+      containers:
+        - name: inshine-frontend
+          image: atulpatil22/frontend-react
+          ports:
+            - containerPort: 3000
+
+
+
+
+    
