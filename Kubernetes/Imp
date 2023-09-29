@@ -1,0 +1,8 @@
+To authenticate API requests, k8s uses the following options: client certificates, bearer tokens, authenticating proxy, or HTTP basic auth.
+
+
+Minikube, by default, gives you full access to manage the resources in kubernetes. That is because it assumes that you are using it for learning and it is only you who is using it. Though, it is still possible to create multiple accounts with different access levels using RBAC. For example, we can create a user (e.g developers & Ops) who can create and delete resources and another user (e.g developers from another department) who can only read resources. The same thing could be done with groups. In addition to that, the access could be managed by namespace. So you can create users or groups who can access a specific namespace and not others. This is useful for scenarios where you isolate the dev and production environments through namespaces. So you give access to production namespace only to a few users.
+
+----------------------------------------------------------------------------------
+
+

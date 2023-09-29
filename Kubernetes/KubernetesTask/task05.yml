@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: hello-container
+        image: busybox
+        command: ["echo", "Hello I'm running job"]
+      restartPolicy: Never  # Ensures the Job terminates after completion
+  backoffLimit: 4  # Number of retries upon failure
+
+
+
+# This Job will run a single container using the "busybox" image, and the container will execute the echo command to display the message "Hello I'm running job." The Job is configured with a restart policy of "Never," meaning it will terminate after completing its task, and it has a backoff limit of 4, which specifies the number of retries in case of a failure (in this case, there are no retries as it's set to 0).

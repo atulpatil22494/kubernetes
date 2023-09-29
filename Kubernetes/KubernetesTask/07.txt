@@ -1,0 +1,5 @@
+deployment.apps/deploy01 
+REVISION  CHANGE-CAUSE
+2         kubectl set image deployment/deploy01 nginx=nginx:de --record=true
+3         kubectl scale deployment/deploy01 --replicas=3 --record=true
+

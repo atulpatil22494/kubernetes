@@ -1,0 +1,289 @@
+What is Kubernetes 👉️
+- Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation.
+- Containers are a good way to bundle and run your applications. In a production environment, you need to manage the containers that run the applications and ensure that there is no downtime. For example, if a container goes down, another container needs to start. Wouldn't it be easier if this behavior was handled by a system?
+- That's how Kubernetes comes to the rescue! Kubernetes provides you with a framework to run distributed systems resiliently. It takes care of scaling and failover for your application, provides deployment patterns, and more. For example: Kubernetes can easily manage a canary deployment for your system.
+
+-----------------------------------------------------
+
+Kubernetes Provides Us 👉️
+- load balancing : If traffic to a container is high, Kubernetes is able to load balance and distribute the network traffic so that the deployment is stable.
+- Storage orchestration : Kubernetes allows you to automatically mount a storage system of your choice, such as local storages, public cloud providers, and more.
+- Self-healing Kubernetes restarts containers that fail, replaces containers, kills containers that don't respond to your user-defined health check, and doesn't advertise them to clients until they are ready to serve.
+
+------------------------------------------------------
+
+Kubernetes Architecture 👉️
+- Kubernetes architecture exists in two parts : 
+  1) Control plane = 
+      - Control plane is the component that control the cluster. 
+      - The control plane is responsible for container orchestration and maintaining the desired state of the cluster.
+      - It also maintains a data record of the configuration and state of all the cluster's kubernetes objects.
+      - The K8s control plane is in constant contact with the compoute machine (Node) to ensure that the cluster runs as configured.
+      - Anythings that happens e.g we want to setup a new pod, create new pod, scale pod, destory somthing we want to do anything it will manage via the control plane.
+      - Control plane comprises of several components: These core Kubernetes components ensure containers are running with the necessary resources in sufficient numbers.
+      
+      - It has the following components.
+           i) The api server - The kube-api server is the central hub of the Kubernetes cluster that exposes the Kubernetes API. All the communication that is happen is via Api server. End users, and other cluster components, talk to the cluster via the API server.
+           
+           ii) Kube-Scheduler - The kube-scheduler is responsible for scheduling pods on worker nodes.
+           
+           iii) etcd - etcd is an open source, key-value store database that stores configuration data and information about the state of the cluster.
+                     - If Api Server want to get any information about the server it communicate with etcd.
+                     - Etcd primarily stores the kubernetes objects, cluster information, node information, and configuration data of the cluster, such as the desired state of the applications running on the cluster. 
+                     
+           iv) Controller Manager - 
+       
+       
+       
+  2) Worker Node = 
+       -  The Worker nodes are responsible for running containerized applications. 
+       - Worker nodes are the servers that run the container in the cluster. They are managed by the control plane and receive instructions from it on how to run the containers that are part of pods.
+       
+       - It has the following components.
+       	    i) Kubelet - Kubelet is an agent component that runs on every node in the cluster.
+       	    
+       	    ii) Container runtime - It is a software component that is required to run containers.
+       	                          - Container runtime runs on all the nodes in the Kubernetes cluster. It is responsible for pulling images from container registries, running containers, allocating and isolating resources for containers, and managing the entire lifecycle of a container on a host.
+       	                          
+       	    iii) Kube-proxy - 
+       	    
+------------------------------------------------------------------  
+       
+Controllers in Kubernetes 👉️
+- A controller’s job is to monitor the current state of a resource such as pods or services and take action to ensure that the desired state is achieved.
+
+-----------------------------------------------------------------
+
+ReplicaSets 👉️
+- ReplicaSet ensures that a specific number of identical pod are always running.
+- The simplest unit in Kubernetes is the pod. We run our containers inside the pod. Say you’ve deployed your app inside a pod and you’re now getting huge traffic. So much that your single pod instance can’t handle it. How do you take care of that? Enter ReplicaSet. A ReplicaSet helps manage traffic by scaling your application to have multiple instances of the same pod. This helps reduce traffic to one particular instance and also helps in load-balancing traffic between each of these instances.
+
+--------------------------------------------------------------
+
+Deployment 👉️
+- Deployments build on top of ReplicaSets.
+- A Deployment is the preferred way to deploy an application inside a pod. It is a higher-level abstraction built on top of ReplicaSets that uses ReplicaSets internally to manage applications.
+- In addition to the work carried out by a ReplicaSet, it provides added functionality such as:
+	i) Rolling Updates: Rolling updates ensure that an application is updated gradually, one replica at a time, while ensuring that the overall availability of the application is not impacted. In comparison, ReplicaSets only support scaling and managing replicas.
+	ii) Rollback: Deployments automatically rollback to a previous version of an application if an update fails. For ReplicaSets, this process would need to be manually performed.
+	
+
+
+In Kubernetes a deployment is a method of launching a pod with containerized applications and ensuring that the necessary number of replicas is always running on the cluster.
+
+On the other hand, a service is responsible for exposing an interface to those pods, which enables network access from either within the cluster or between external processes and the service.
+
+---------------------------------------------------------------------
+
+Services in K8s 👉️
+- In Kubernetes, a Service is a method for exposing a network application that is running as one or more Pods in your cluster.
+- 
+
+Types of services => 
+1) ClusterIP = 
+	- ClusterIP is the default type of service, which is used to expose a service on an IP address internal to the cluster. Access is only permitted from within the cluster.
+	
+2) NodePort = 
+    	- Exposes the Service on each Node's IP at a static port.
+    	- NodePort, as the name implies, opens a specific port on all the Nodes (the VMs), and any traffic that is sent to this port is forwarded to the service.
+    	
+3) LoadBalancer = 
+	- Exposes the Service externally using an external load balancer. Kubernetes does not directly offer a load balancing component; you must provide one, or you can integrate your Kubernetes cluster with a cloud provider.
+	- This service type works when you are using a cloud provider to host your Kubernetes cluster. When you choose LoadBalancer as the service type, the cluster will contact the cloud provider and create a load balancer. 
+
+4) ExternalName =
+	- 
+
+-----------------------------------------------------------------
+
+StatefulSet 👉️
+- A StatefulSet is used to manage stateful applications with persistent storage.
+
+- A stateful pod in Kubernetes is a pod that requires persistent storage and a stable network identity to maintain its state all the time, even during pod restarts or rescheduling.
+- These pods are commonly used for stateful applications such as databases or distributed file systems as these require a stable identity and persistent storage to maintain data consistency.
+- A StatefulSet helps manage these pods by providing some key unique features:
+	- Unique Identity: StatefulSets assign each pod a unique index, which provides a consistent and unique identity even if pods are deleted or recreated.
+	- Persistent Network Identity: StatefulSets provide each pod with a persistent network identity in the form of a stable hostname based on its ordinal index.
+	- Persistent Storage: StatefulSets provide persistent storage to their pods through Kubernetes PersistentVolumes, which can be dynamically provisioned and attached to pods as needed.
+	
+-----------------------------------------------------
+
+DaemonSet 👉️
+- A DaemonSet ensures that a single instance of a pod is running on each node in a cluster. 
+
+---------------------------------------------------------
+Note: 👉️
+- Hence, in comparison to ReplicaSets or Deployments, which are useful for managing general-purpose tools, StatefulSets are used in managing stateful pods that require a unique identity and stable network identity to maintain their state. 
+- Take, for example, a database that requires persistent storage. The database’s nodes would maintain their state so that a new node could take over the previous node’s hostname (unique identity) and network identity and hence make sure that data is consistent.
+
+------------------------------------------------------------------
+
+Secret 👉️
+- A Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in a container image. Using a Secret means that you don't need to include confidential data in your application code.
+- 
+
+Types of Secret => 
+ - Opaque secrets = 
+	- Opaque is the default Secret type if omitted from a Secret configuration file. When you create a Secret using kubectl, you will use the generic subcommand to indicate an Opaque Secret type. 
+
+ - Docker config Secrets
+	- If you are creating a Secret to store credentials for accessing a container image registry, you must use one of the following type values for that Secret:
+
+	    kubernetes.io/dockercfg
+	    kubernetes.io/dockerconfigjson
+	    
+ - Basic authentication Secret
+	- The kubernetes.io/basic-auth type is provided for storing credentials needed for basic authentication.
+	- The basic authentication Secret type is provided only for convenience. You can create an Opaque type for credentials used for basic authentication. However, using the defined and public Secret type (kubernetes.io/basic-auth) helps other people to understand the purpose of your Secret, and sets a convention for what key names to expect. (Sanme for ssh authentication).
+	
+ - SSH authentication secrets
+	- The builtin type kubernetes.io/ssh-auth is provided for storing data used in SSH authentication. 
+ 
+-  by using yaml = 
+ apiVersion: v1
+kind: Secret
+metadata:
+  name: test-secret
+data:
+  username: bXktYXBw
+  password: Mzk1MjgkdmRnN0pi
+  
+ or by using kubectl create 
+  - kubectl create secret generic test-secret --from-literal='username=my-app' --from-literal='password=39528$vdg7Jb'
+-------------------------------------------------------------------
+
+ConfigMaps 👉️
+
+- A ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.
+
+e.g - 
+- kubectl create configmap game-config --from-file=configure-pod-container/configmap/
+
+when we want differnet key name by default file name 
+- kubectl create configmap game-config-3 --from-file=game-special-key=configure-pod-container/configmap/game.properties
+
+-    --from-literal argument to define a literal value from the command line:
+- kubectl create configmap special-config --from-literal=special.how=very --from-literal=special.type=charm
+
+----------------------------------------------------------------
+
+Jobs 👉️
+- Jobs manages batch processes that run to completion, like one-time data processing tasks they ensure that a certion task or job is done & finished successfully.
+- These Jobs help us to perform a particular task which we assigned to them.
+
+
+CronJobs 👉️
+- CronJob is meant for performing regular scheduled actions such as backups, report generation, and so on. 
+- It runs a job periodically on a given schedule, written in Cron format.
+
+
+Difference between Jobs & CronJobs 👉️
+- The main difference between a Job and a Cron Job is, a Job will perform a given task and once it’s completed it will stop the process and the Job runs only when we need it to run. Cron Job also does the same thing but we can schedule a Cron Job to run at a given schedule. For instance, we can schedule a Cron Job to run once every hour or we can schedule it to run at 6 am daily.
+
+------------------------------------------------------------------
+
+Volumes in k8s 👉️
+- A Container's file system lives only as long as the Container does. So when a Container terminates and restarts, filesystem changes are lost. For more consistent storage that is independent of the Container, you can use a Volume. 
+
+Persistent Volumes 👉️
+- A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.
+- You, as cluster administrator, create a PersistentVolume backed by physical storage. You do not associate the volume with any Pod.
+
+persistent Volume Claim 👉️
+- Pods use PersistentVolumeClaims to request physical storage.
+
+----------
+Difference between Volumes and PersistentVolumes
+
+   - A Volume separates storage from a container but binds it to a Pod, while PVs separate storage from a Pod. 
+   - The lifecycle of a Volume is dependent on the Pod using it, while the lifecycle of a PV is not.
+   - A Volume enables safe container restart and allows sharing of data across containers, whereas a PV enables safe Pod termination or restart. 
+   - A separate manifest YAML file is needed to create a PV, but not required for a volume.
+
+
+--------------------------------------------------------------------------
+
+Probes 👉️
+- Kubernetes probes are a mechanism for providing the Kubernetes control plane with information about the internal state of your applications. They let your cluster identify running pods that are in an unhealthy state.
+- Kubernetes allows us to set up probes, which are health checks that can monitor a container status.
+
+	i) Liveness Probe => - Liveness probes let Kubernetes know if your app is alive or dead. If you app is alive, then Kubernetes leaves it alone. If your app is dead, Kubernetes removes the Pod and starts a new one to replace it.
+			     - Liveness probe checks the container health as we tell it do, and if for some reason the liveness probe fails, it restarts the container.
+			     - Liveness probes detect whether a pod is healthy by running a command or making a network request inside the container. Containers that fail the check are restarted.
+			     - We can define liveness probe in 3 ways:  1) Liveness command      =  command
+									2) Liveness HTTP request =  httpGet
+									3) TCP Liveness probe    =  tcpSocket
+													  
+	ii) Readiness probe => - Readiness probes are designed to let Kubernetes know when your app is ready to serve traffic. 
+			       - Kubernetes makes sure the readiness probe passes before allowing a service to send traffic to the pod. If a readiness probe starts to fail, Kubernetes stops sending traffic to the pod until it passes.
+			       - Readiness probes identify when a container is able to handle external traffic received from a service. Containers don’t become part of their services until they pass a readiness probe.
+			       -In some cases we would like our application to be alive, but not serve traffic unless some conditions are met e.g, populating a dataset, waiting for some other service to be alive etc. In such cases we use readiness probe. If the condition inside readiness probe passes, only then our application can serve traffic.
+			       - Readiness probe is defined in 3 ways exactly like the Liveness probe above. We just need to replace livenessProbe with readinessProbe.
+			       
+	iii) Startup Probe => 
+
+
+-------------------------------------------------------------------
+
+What is labels and selectors in k8s 👉️
+- Labels are key/value pairs that are attached to objects such as Pods. 
+- Labels are properties that we can attach to each item for example for their type, kind, and so on. Selectors help us in finding these items.
+- Labels and Selectors are the standard method to group things together in Kubernetes. We can filter the objects based on the criteria like class, kind, and functions. Labels are the properties attached to each item/object. Selector helps us to filter the items/objects which have labels attached to them.
+- 
+
+--------------------------------------------------------------------------
+
+Role-based access control (RBAC) 👉️
+- Role-based access control (RBAC) is a method of regulating access to computers and network resources based on the roles of individual users within an enterprise. We can use Role-based access control on all the Kubernetes resources that allow CRUD (Create, Read, Update, Delete).
+- If your Kubernetes journey started with a handful of team members and a small cluster consisting of only a few nodes, you might not have a systematic approach to authorization yet. Perhaps you even granted everyone on your team cluster admin permissions to keep management simple. But not every user needs unrestricted ability to create, modify, and delete resources. As the number of cluster nodes, applications, and team members increases, you’ll want to limit the resources your team members and applications can access, as well as the actions they can take. The Role-Based Access Control (RBAC) framework in Kubernetes allows you to do just that. For example, it can help to ensure that developers only deploy certain apps to a given namespace or that your infrastructure management teams have view-only access for monitoring tasks. 
+
+- In Kubernetes, ClusterRoles and Roles define the actions a user can perform within a cluster or namespace, respectively. You can assign these roles to Kubernetes subjects (users, groups, or service accounts) with role bindings and cluster role bindings. 
+
+Role, ClusterRole => 
+- An RBAC Role or ClusterRole contains rules that represent a set of permissions. 
+- They are just a set of rules that represent a set of permissions. A Role can only be used to grant access to resources within namespaces. A ClusterRole can be used to grant the same permissions as a Role but they can also be used to grant access to cluster-scoped resources,
+- permissions that apply to resources within one namespace, which are managed through Roles, and those that apply to the entire cluster, which are managed through ClusterRoles.
+- A Role always sets permissions within a particular namespace; when you create a Role, you have to specify the namespace it belongs in.
+
+Subjects => 
+- A subject is the entity that will make operations in the cluster. They can be user accounts, services accounts or even a group.
+ 
+RoleBinding and ClusterRoleBinding => 
+- As the name implies, it’s just the binding between a subject and a Role or a ClusterRole.
+
+
+---------------------------------------------------------------------------
+
+What Are Kubernetes Service Accounts? 👉️
+- Whenever you access your Kubernetes cluster with kubectl, you are authenticated by Kubernetes with your user account. User accounts are meant to be used by humans. But when a pod running in the cluster wants to access the Kubernetes API server, it needs to use a service account instead. Service accounts are just like user accounts but for non-humans.
+
+
+Use cases for Kubernetes service accounts => 
+- why would pods inside the Kubernetes cluster need to connect to the Kubernetes API at all? Well, there are multiple use cases for it. The most common one is when you have a CI/CD pipeline agent deploying your applications to the same cluster. Many cloud-native tools also need access to your Kubernetes API to do their jobs, such as logging or monitoring applications.
+- An external service needs to communicate with the Kubernetes API server. For example, authenticating to the cluster as part of a CI/CD pipeline.
+- Providing read-only access to sensitive information stored in Secrets.
+
+Default service accounts => 
+- When you create a cluster, Kubernetes automatically creates a ServiceAccount object named default for every namespace in your cluster. The default service accounts in each namespace get no permissions by default other than the default API discovery permissions that Kubernetes grants to all authenticated principals if role-based access control (RBAC) is enabled.
+
+
+How to use service accounts =>
+- To use a Kubernetes service account, you do the following:
+- Create a ServiceAccount object using a Kubernetes client like kubectl or a manifest that defines the object.
+- Grant permissions to the ServiceAccount object using an authorization mechanism such as RBAC.
+- Assign the ServiceAccount object to Pods during Pod creation.
+
+
+-----------------------------------------------------------------------------
+
+Ingress 👉️
+- Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource.
+- An Ingress is an API object that defines rules which allow external access to services in a cluster. An Ingress controller fulfills the rules set in the Ingress.
+
+
+
+
+
+
+
+

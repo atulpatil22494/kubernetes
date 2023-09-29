@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: secret-vol-pod
+spec: 
+  containers:
+    - name: secret-vol-container
+      image: nginx
+      volumeMounts: 
+        - name: secret-volume
+          mountPath: /etc/secret
+  volumes: 
+    - name: secret-volume
+      secret: 
+        secretName: my-secret
+
+
+# to check the content of the mounted volume in the second pod:
+# kubectl exec secret-volume-pod -- cat /etc/secrets/password
+
+
+# By using this command we can decode our secret
+# kubectl get secret my-secret -o jsonpath='{.data.password}' | base64 --decode

@@ -1,0 +1,86 @@
+1) : Create a new deployment deploy-1 using image`busybox with 3 replicas and command sleep 3600 
+=> kubectl create deployment deploy-1 --image=busybox --replicas=3 -- /bin/sh -c "sleep 3600"
+
+------------------------------------------------------
+
+2) Create a pod called `httpd using the image `httpd:alpine` in the secops namespace. Next, create a service of type ClusterIP by the same name(httpd). The target port for the service should be 80
+=> - kubectl create namespace secops
+   - kubectl run httpd --image=httpd:alpine --namespace=secops
+   - kubectl expose pod httpd --port=80 --namespace=secops --name=httpd --type=ClusterIP --target-port=80
+
+--------------------------------------------------------
+
+7) 
+=> a. Create a deployment deploy01 with the image nginx and port 80 exposed:
+kubectl create deployment deploy01 --image=nginx --port=80
+
+b. Update the deployment deploy01 with the image nginx:dev and record the execution:
+kubectl set image deployment/deploy01 nginx=nginx:dev --record=true
+
+c. If the deployment in step b is unsuccessful, rollback the deployment to the previous state:
+kubectl rollout undo deployment/deploy01
+
+d. If the Nginx deployment is in a healthy state, scale the deployment to run 3 replicas and record the execution:
+kubectl scale deployment/deploy01 --replicas=3 --record=true
+
+e. Display the history of deployment deploy01 and store it in a file named /opt/answers/31.txt:
+kubectl rollout history deployment/deploy01 > /opt/answers/31.txt
+
+----------------------------------------------------------------
+
+8)
+ Create a pod that uses secrets
+a. Pull secrets from environment variables
+b. Pull secrets from a volume
+c. Dump the secrets out via kubectl to show it worked
+
+First, create a secret containing your sensitive data. For example, let's create a secret named "my-secret" with a key "password":
+- kubectl create secret generic my-secret --from-literal=password=supersecret
+
+# By using this command we can decode our secret
+# kubectl get secret my-secret -o jsonpath='{.data.password}' | base64 --decode
+
+a) 
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: secret-env-pod
+spec: 
+  containers: 
+    - name: secret-env-container
+      image: nginx
+      env: 
+        - name: MY_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: my-secret
+              key: password
+              
+b) 
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: secret-vol-pod
+spec: 
+  containers:
+    - name: secret-vol-container
+      image: nginx
+      volumeMounts: 
+        - name: secret-volume
+          mountPath: /etc/secret
+  volumes: 
+    - name: secret-volume
+      secret: 
+        secretName: my-secret
+        
+c) 
+You can use kubectl to check that your secrets are available in the pod. For example, to check the environment variable in the first pod:
+- kubectl exec secret-env-pod -- env | grep MY_PASSWORD
+
+And to check the content of the mounted volume in the second pod:
+- kubectl exec secret-volume-pod -- cat /etc/secrets/password
+
+These commands will show that the secrets are accessible in the respective pods
+
+-----------------------------------------------------------------------------------
+

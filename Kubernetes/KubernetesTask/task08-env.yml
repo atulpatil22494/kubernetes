@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: secret-env-pod
+spec: 
+  containers: 
+    - name: secret-env-container
+      image: nginx
+      env: 
+        - name: MY_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: my-secret
+              key: password
+
+
+# You can use kubectl to check that your secrets are available in the pod. 
+# kubectl exec secret-env-pod -- env | grep MY_PASSWORD
+
+# By using this command we can decode our secret
+# kubectl get secret my-secret -o jsonpath='{.data.password}' | base64 --decode
