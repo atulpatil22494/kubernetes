@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mysql-config-map
-data:
-  DB_HOST: service-inshine-database    # The name of mysql service
-  DB_NAME: inshine     # The name of the database used by the demo app
-  DB_USERNAME: root     # A new created user for the demo app 
