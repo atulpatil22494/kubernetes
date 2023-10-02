@@ -19,6 +19,27 @@
 
               }
            }
+           
+    stage('Update Deployment File') {
+        environment {
+            GIT_REPO_NAME = "kubernetes"
+            GIT_USER_NAME = "atulpatil22494"
+        }
+        steps {
+            withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                sh ''' 
+                    git config user.email "atul.patil@xenonstack.com"
+                    git config user.name "atulpatil22494"
+                    BUILD_NUMBER=${BUILD_NUMBER}
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" yaml_kubernetes/Inshine-backend.yaml
+                    git add yaml_kubernetes/Inshine-backend.yaml
+                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                '''
+            }
+        }       
+    }
+           
          }
       }
    }
