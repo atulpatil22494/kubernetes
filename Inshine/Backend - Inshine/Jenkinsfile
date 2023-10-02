@@ -6,7 +6,7 @@
         
        stage('Build and Push Docker Image') {
          environment {
-           DOCKER_IMAGE = "atulpatil22/jenkins_docker:${BUILD_NUMBER}"    
+           DOCKER_IMAGE = "atulpatil22/inshine_backend_jenkins:${BUILD_NUMBER}"    
            REGISTRY_CREDENTIALS = credentials('docker-cred')
         }
          steps {
