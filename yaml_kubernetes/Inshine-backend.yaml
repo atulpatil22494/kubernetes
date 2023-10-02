@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: inshine-backend
-          image: atulpatil22/inshine_backend_jenkins:replaceImageTag
+          image: atulpatil22/inshine_backend_jenkins:2
 
           ports:
             - containerPort: 8081
