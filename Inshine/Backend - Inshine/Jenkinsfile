@@ -12,7 +12,7 @@
          steps {
            script {
                sh '''
-                 cd Inshine/Backend-Inshine/
+                 cd Inshine/Backend - Inshine/
                  docker build -t ${DOCKER_IMAGE} .
                  docker login -u atulpatil22 -p ${REGISTRY_CREDENTIALS}
                  docker push ${DOCKER_IMAGE}
