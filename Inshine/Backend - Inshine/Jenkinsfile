@@ -18,9 +18,10 @@
                  '''
 
               }
-           }
-           
-    stage('Update Deployment File') {
+           } 
+       }
+               
+     stage('Update Deployment File') {
         environment {
             GIT_REPO_NAME = "kubernetes"
             GIT_USER_NAME = "atulpatil22494"
@@ -36,12 +37,10 @@
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                 '''
-            }
-        }       
+             }
+          }       
+       }           
     }
-           
-         }
-      }
-   }
+}
 
        
