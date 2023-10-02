@@ -1,0 +1,29 @@
+pipeline {
+    
+    agent any 
+        
+    stages {
+        
+        stage('Checkout'){
+           steps {
+                git credentialsId: '57adf257-3c13-4da7-9068-59675d3f7a62', 
+                url: 'https://github.com/iam-veeramalla/cicd-end-to-end',
+                branch: 'main'
+           }
+        }
+
+        stage('Build Docker'){
+            steps{
+                script{
+                    sh '''
+                    echo 'Buid Docker Image'
+                    docker build -t atulpatil22/jenkins_docker .
+                    docker run -dp 3000:3000 atulpatil22/jenkins_docker
+                    '''
+                }
+            }
+        }
+
+
+    }
+}
