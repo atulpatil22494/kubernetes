@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-inshine-frontend
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      name: inshine-frontend
+  template:
+    metadata:
+      labels:
+        name: inshine-frontend
+        app: inshine-frontend
+    spec:
+      containers:
+        - name: inshine-frontend
+          image: "{{ .Values.frontend.image }}"  # Updated dynamically from values.yaml
+          ports:
+            - containerPort: 3000
+
+
+
+
+    

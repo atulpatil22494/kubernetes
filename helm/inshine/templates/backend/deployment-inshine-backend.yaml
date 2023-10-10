@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.metadata_name }}backend
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      name: {{ .Values.backend.matchLabels.defaultvalue }}backend
+      app: {{ .Values.backend.matchLabels.defaultvalue }}backend
+    
+  template:
+    metadata:
+      name: {{ .Values.backend.matchLabels.defaultvalue }}backend
+      labels:
+        name: {{ .Values.backend.matchLabels.defaultvalue }}backend
+        app: {{ .Values.backend.matchLabels.defaultvalue }}backend
+  
+    spec:
+      containers:
+        - name: inshine-backend
+          image: "{{ .Values.backend.image }}"  # Updated dynamically from values.yaml
+          # imagePullPolicy: "IfNotPresent"
+          
+          ports:
+            - containerPort: 8081
+
+          env:   # Setting Environmental Variables
+          
+             - name: DB_HOST   # Setting Database host address
+               value: {{ .Values.backend.env.host_name }}
+               
+             - name: DB_NAME  # Setting Database name
+               value: {{ .Values.backend.env.db_name }}
+               
+             - name: DB_USERNAME  # Setting Database username
+               value: {{ .Values.backend.env.db_username }}
+               
+             - name: DB_PASSWORD # Setting Database password
+               value: {{ .Values.backend.env.db_password }}
+ 
+      
+       
