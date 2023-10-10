@@ -1,0 +1,74 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_REGISTRY = 'atulpatil22'
+        DOCKER_CRED = credentials('docker-cred')
+        HELM_CHART_PATH = 'helm/inshine'
+    }
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/atulpatil22494/kubernetes.git'
+            }
+        }
+
+        stage('Build and Package Database') {
+            steps {
+                dir('Inshine/Database-MySQL') {
+                    script {
+                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_database_mysql:${BUILD_NUMBER}"
+                        sh "docker build -t ${dockerImageTag} ."
+                        docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
+                            sh "docker push ${dockerImageTag}"
+                        }
+                        updateValuesYAML('backend.database.image', dockerImageTag)
+                      //  sh "helm upgrade --install backend ${HELM_CHART_PATH}"
+                    }
+                }
+            }
+        }
+
+        stage('Build and Package Spring Boot') {
+            steps {
+                dir('Inshine/Backend - Inshine') {
+                    script {
+                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_backend_springboot:${BUILD_NUMBER}"
+                        sh "docker build -t ${dockerImageTag} ."
+                        docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
+                            sh "docker push ${dockerImageTag}"
+                        }
+                        updateValuesYAML('backend.image', dockerImageTag)
+                       // sh "helm upgrade --install backend ${HELM_CHART_PATH}"
+                    }
+                }
+            }
+        }
+
+        stage('Build React-app') {
+            steps {
+                dir('Inshine/Frontend - Inshine/reactt') {
+                    script {
+                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_frontend_react:${BUILD_NUMBER}"
+                        sh "docker build -t ${dockerImageTag} ."
+                        docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
+                            sh "docker push ${dockerImageTag}"
+                        }
+                        updateValuesYAML('frontend.image', dockerImageTag)
+                        // sh "helm upgrade --install frontend ${HELM_CHART_PATH}"
+                    }
+                }
+            }
+        }
+
+        stage('Deployment app through helm on Kubernetes') {
+            steps {
+                    sh "helm upgrade --install inshine ${HELM_CHART_PATH}"
+            }
+        }
+
+    }
+}
+
+def updateValuesYAML(key, value) {
+    sh "yq write -i ${HELM_CHART_PATH}/values.yaml ${key} ${value}"
+}
