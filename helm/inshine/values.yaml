@@ -1,0 +1,22 @@
+
+backend:
+
+  replicas: 1
+      
+  metadata_name: development-inshine-
+  
+  matchLabels:
+  
+    defaultvalue: inshine-
+  
+  env:
+    host_name: inshine-database
+    db_name: inshine
+    db_username: root
+    db_password: root
+  
+  
+  
+  
+  
+

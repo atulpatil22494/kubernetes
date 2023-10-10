@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.metadata_name }}database
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:      
+        name: {{ .Values.backend.matchLabels.defaultvalue }}database
+        app: {{ .Values.backend.matchLabels.defaultvalue }}database    
+  template:
+    metadata:
+      name: {{ .Values.backend.matchLabels.defaultvalue }}database-mysql
+      labels:
+        name: {{ .Values.backend.matchLabels.defaultvalue }}database
+        app: {{ .Values.backend.matchLabels.defaultvalue }}database
+    spec:
+      containers:
+        - name: inshine-database
+          image: atulpatil22/inshine-database
+
+          env:
+          - name: DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-config-map
+                key: DB_NAME
+
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secrets
+                key: DB_PASSWORD
+
+          ports:
+            - containerPort: 3306
+              name: mysql
+
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-persistance-storage
+      volumes:
+        - name: mysql-persistance-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
