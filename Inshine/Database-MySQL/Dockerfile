@@ -1,5 +1,5 @@
 # Dockerfile for MySQL
-FROM mysql:8.0
+FROM mysql
 ENV MYSQL_ROOT_PASSWORD=root
 ENV DB_NAME=inshine
 COPY . .
