@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_REGISTRY = 'atulpatil22'
+        DOCKER_REGISTRY = 'atulpatil22494'
         DOCKER_CRED = credentials('docker-cred')
         HELM_CHART_PATH = 'helm/inshine'
     }
