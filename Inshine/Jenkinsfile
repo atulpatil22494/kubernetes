@@ -3,10 +3,17 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'atulpatil22494'
         DOCKER_CRED = credentials('docker-cred')
-        HELM_CHART_PATH = 'helm/inshine'
-        
+        HELM_CHART_PATH = 'helm/inshine'        
     }
     stages {
+
+        stages {
+            stage('Install yq') {
+                steps {
+                    sh 'sudo apt-get update -y && sudo apt-get install yq -y'
+                }
+            }
+        }
         stage('Clone Repository') {
             steps {
                 git branch: 'main', url: 'https://github.com/atulpatil22494/kubernetes.git'
