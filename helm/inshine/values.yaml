@@ -16,7 +16,7 @@ backend:
     db_password: root
   
 database:
-  image: "atulpatil22/inshine_database_mysql:latest"
+  image: "atulpatil22494/inshine_database_mysql:latest"
   
 frontend:
-  image: "atulpatil22/inshine_frontend_react:latest"
+  image: "atulpatil22494/inshine_frontend_react:latest"
