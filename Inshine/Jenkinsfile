@@ -8,6 +8,15 @@ pipeline {
     }
     stages {
 
+        stage('Setup Environment') {
+            steps {
+                script {
+                    sh "cp ~/.kube/config /var/lib/jenkins/workspace/config"
+                    KUBECONFIG1 = '/var/lib/jenkins/workspace/config'
+                }
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 script {
@@ -58,7 +67,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh "echo '\${KUBECONFIG}' > /tmp/config"
+                    sh "echo '\${KUBECONFIG1}' > /tmp/config"
                     sh "kubectl --kubeconfig=/tmp/config apply -f your-deployment.yaml"
                 }
             }
