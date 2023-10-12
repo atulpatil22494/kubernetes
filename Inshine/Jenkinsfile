@@ -11,7 +11,7 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 script {
-                    sh "cp ~/.kube/config /var/lib/jenkins/workspace/config"
+                    sh "cp /home/xs378-atupat/.kube/config /var/lib/jenkins/workspace/config"
                     KUBECONFIG1 = '/var/lib/jenkins/workspace/config'
                 }
             }
