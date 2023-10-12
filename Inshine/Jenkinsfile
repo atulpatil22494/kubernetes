@@ -64,24 +64,17 @@ pipeline {
             }
         }
 
-stage('Deploy to Kubernetes') {
-    steps {
-        script {
-            // Print the content of the KUBECONFIG file (for debugging purposes)
-            echo "KUBECONFIG: ${KUBECONFIG}"
-            sh "cat ${KUBECONFIG}"
-            
-            // Apply your Kubernetes manifests (example: deployment.yaml, service.yaml, ingress.yaml)
-            // Replace 'path/to/your/deployment.yaml' with the correct path to your Kubernetes deployment manifest
-            sh "kubectl --kubeconfig=${KUBECONFIG} apply -f path/to/your/deployment.yaml"
-            
-            // Apply other Kubernetes manifests if needed (services, ingress, etc.)
-            // sh "kubectl --kubeconfig=${KUBECONFIG} apply -f path/to/your/service.yaml"
-            // sh "kubectl --kubeconfig=${KUBECONFIG} apply -f path/to/your/ingress.yaml"
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Print the content of the KUBECONFIG file (for debugging purposes)
+                    echo "KUBECONFIG: ${KUBECONFIG}"
+                    sh "cat ${KUBECONFIG}"
+                    
+                    sh "helm upgrade --install inshine ${HELM_CHART_PATH}"
+                }
+            }
         }
-    }
-}
-
 
         stage('rbac deployment') {
             steps {
@@ -90,12 +83,6 @@ stage('Deploy to Kubernetes') {
                             sh "kubectl apply -f rbac.yaml"
                     }
                 }
-            }
-        }
-        
-        stage('Deployment app through helm on Kubernetes') {
-            steps {
-                sh "helm upgrade --install inshine ${HELM_CHART_PATH}"
             }
         }
     }
