@@ -4,8 +4,10 @@ pipeline {
         DOCKER_REGISTRY = 'atulpatil22'
         DOCKER_CRED = credentials('docker-cred')
         HELM_CHART_PATH = '/var/lib/jenkins/workspace/test1/helm/inshine'
+        KUBECONFIG = credentials('config')
     }
     stages {
+
         stage('Clone Repository') {
             steps {
                 script {
@@ -52,6 +54,26 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh "echo '\${KUBECONFIG}' > /tmp/config"
+                    sh "kubectl --kubeconfig=/tmp/config apply -f your-deployment.yaml"
+                }
+            }
+        }
+
+        stage('rbac deployment') {
+            steps {
+                dir('helm/inshine') {
+                    script {
+                            sh "kubectl apply -f rbac.yaml"
+                    }
+                }
+            }
+        }
+        
         stage('Deployment app through helm on Kubernetes') {
             steps {
                 sh "helm upgrade --install inshine ${HELM_CHART_PATH}"
