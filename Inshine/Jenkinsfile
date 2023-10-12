@@ -4,7 +4,7 @@ pipeline {
         DOCKER_REGISTRY = 'atulpatil22'
         DOCKER_CRED = credentials('docker-cred')
         HELM_CHART_PATH = '/var/lib/jenkins/workspace/test1/helm/inshine'
-        KUBECONFIG = credentials('config')
+        KUBECONFIG1 = credentials('config')
     }
     stages {
 
