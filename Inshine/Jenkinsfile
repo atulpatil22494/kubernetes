@@ -4,15 +4,15 @@ pipeline {
         DOCKER_REGISTRY = 'atulpatil22'
         DOCKER_CRED = credentials('docker-cred')
         HELM_CHART_PATH = '/var/lib/jenkins/workspace/3-tier/helm/inshine'
-        KUBECONFIG1 = credentials('config')
+        KUBECONFIG = credentials('config')
     }
     stages {
-
         stage('Setup Environment') {
             steps {
                 script {
-                    sh "cp /home/xs378-atupat/config /var/lib/jenkins/workspace/config"
-                    KUBECONFIG = '/var/lib/jenkins/workspace/config'
+                    // Copy Kubeconfig to the Jenkins workspace
+                    sh "cp /home/xs378-atupat/config $HOME/.kube/config"
+                    KUBECONFIG = "$HOME/.kube/config"
                 }
             }
         }
@@ -20,10 +20,12 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 script {
+                    // Clone the Git repository
                     git branch: 'main', credentialsId: 'your-git-credentials-id', url: 'https://github.com/atulpatil22494/kubernetes.git'
                 }
             }
         }
+
         stage('Build and Package Database') {
             steps {
                 dir('Inshine/Database-MySQL') {
@@ -37,6 +39,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build and Package Spring Boot') {
             steps {
                 dir('Inshine/Backend - Inshine') {
@@ -50,6 +53,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build React-app') {
             steps {
                 dir('Inshine/Frontend - Inshine/reactt') {
@@ -64,11 +68,12 @@ pipeline {
             }
         }
 
-        stage('rbac deployment') {
+        stage('RBAC Deployment') {
             steps {
                 dir('/var/lib/jenkins/workspace/3-tier/helm/inshine') {
                     script {
-                            sh "kubectl apply -f rbac.yaml"
+                        // Apply RBAC configuration
+                        sh "kubectl apply -f rbac.yaml"
                     }
                 }
             }
@@ -81,10 +86,10 @@ pipeline {
                     echo "KUBECONFIG: ${KUBECONFIG}"
                     sh "cat ${KUBECONFIG}"
                     
+                    // Upgrade Helm Chart
                     sh "helm upgrade --install inshine ${HELM_CHART_PATH}"
                 }
             }
         }
-
     }
 }
