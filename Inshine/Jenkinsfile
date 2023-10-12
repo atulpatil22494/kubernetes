@@ -64,6 +64,16 @@ pipeline {
             }
         }
 
+        stage('rbac deployment') {
+            steps {
+                dir('helm/inshine') {
+                    script {
+                            sh "kubectl apply -f rbac.yaml"
+                    }
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 script {
@@ -76,14 +86,5 @@ pipeline {
             }
         }
 
-        stage('rbac deployment') {
-            steps {
-                dir('helm/inshine') {
-                    script {
-                            sh "kubectl apply -f rbac.yaml"
-                    }
-                }
-            }
-        }
     }
 }
