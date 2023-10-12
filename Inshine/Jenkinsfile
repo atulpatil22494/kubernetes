@@ -8,6 +8,16 @@ pipeline {
     }
     stages {
 
+        stage('rbac deployment') {
+            steps {
+                dir('helm/inshine') {
+                    script {
+                            sh "kubectl apply -f rbac.yaml"
+                    }
+                }
+            }
+        }
+
         stage('Install yq') {
             steps {
                 script {
@@ -80,7 +90,7 @@ pipeline {
         }
 
         stage('Deployment app through helm on Kubernetes') {
-            steps {
+            steps {                    
                     sh "helm upgrade --install inshine ${HELM_CHART_PATH}"
             }
         }
