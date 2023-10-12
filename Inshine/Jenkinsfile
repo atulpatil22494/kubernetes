@@ -4,6 +4,7 @@ pipeline {
         DOCKER_REGISTRY = 'atulpatil22'
         DOCKER_CRED = credentials('docker-cred')
         HELM_CHART_PATH = 'helm/inshine'
+        KUBECONFIG = credentials('config')
         
     }
     stages {
@@ -88,6 +89,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh "echo '\${KUBECONFIG}' > /tmp/config"
+                    sh "kubectl --kubeconfig=/tmp/config apply -f your-deployment.yaml"
+                }
+            }
+        }
+        
 
         stage('Deployment app through helm on Kubernetes') {
             steps {                    
