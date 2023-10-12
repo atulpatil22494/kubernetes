@@ -4,7 +4,7 @@ pipeline {
         DOCKER_REGISTRY = 'atulpatil22'
         DOCKER_CRED = credentials('docker-cred')
         HELM_CHART_PATH = '/var/lib/jenkins/workspace/test1/helm/inshine'
-        KUBECONFIG = credentials('config')
+        KUBECONFIG1 = credentials('config')
     }
     stages {
 
@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     sh "cp /home/xs378-atupat/config /var/lib/jenkins/workspace/config"
-                    KUBECONFIG1 = '/var/lib/jenkins/workspace/config'
+                    KUBECONFIG = '/var/lib/jenkins/workspace/config'
                 }
             }
         }
@@ -64,14 +64,24 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    sh "echo '\${KUBECONFIG1}' > /tmp/config"
-                    sh "kubectl --kubeconfig=/tmp/config apply -f your-deployment.yaml"
-                }
-            }
+stage('Deploy to Kubernetes') {
+    steps {
+        script {
+            // Print the content of the KUBECONFIG file (for debugging purposes)
+            echo "KUBECONFIG: ${KUBECONFIG}"
+            sh "cat ${KUBECONFIG}"
+            
+            // Apply your Kubernetes manifests (example: deployment.yaml, service.yaml, ingress.yaml)
+            // Replace 'path/to/your/deployment.yaml' with the correct path to your Kubernetes deployment manifest
+            sh "kubectl --kubeconfig=${KUBECONFIG} apply -f path/to/your/deployment.yaml"
+            
+            // Apply other Kubernetes manifests if needed (services, ingress, etc.)
+            // sh "kubectl --kubeconfig=${KUBECONFIG} apply -f path/to/your/service.yaml"
+            // sh "kubectl --kubeconfig=${KUBECONFIG} apply -f path/to/your/ingress.yaml"
         }
+    }
+}
+
 
         stage('rbac deployment') {
             steps {
