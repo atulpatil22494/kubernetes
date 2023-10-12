@@ -8,11 +8,11 @@ pipeline {
     }
     stages {
 
-        stage('Install yq') {
+       /* stage('Install yq') {
             steps {
                 sh 'sudo apt-get update -y && sudo apt-get install yq -y'
             }
-        }
+        }*/
         stage('Clone Repository') {
             steps {
                 git branch: 'main', url: 'https://github.com/atulpatil22494/kubernetes.git'
