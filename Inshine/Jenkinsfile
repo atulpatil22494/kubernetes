@@ -3,112 +3,59 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'atulpatil22'
         DOCKER_CRED = credentials('docker-cred')
-        HELM_CHART_PATH = 'helm/inshine'
-        KUBECONFIG = credentials('config')
-        
+        HELM_CHART_PATH = '/var/lib/jenkins/workspace/test1/helm/inshine'
     }
     stages {
-
-        stage('rbac deployment') {
-            steps {
-                dir('helm/inshine') {
-                    script {
-                            sh "kubectl apply -f rbac.yaml"
-                    }
-                }
-            }
-        }
-
-        stage('Install yq') {
-            steps {
-                script {
-                    sh 'echo "Doordie@1234" | sudo -S apt-get update -y && sudo -S apt-get install yq -y'
-                }
-            }
-        }
-
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/atulpatil22494/kubernetes.git'
+                script {
+                    git branch: 'main', credentialsId: 'your-git-credentials-id', url: 'https://github.com/atulpatil22494/kubernetes.git'
+                }
             }
         }
-
         stage('Build and Package Database') {
             steps {
                 dir('Inshine/Database-MySQL') {
                     script {
-                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_database_mysql:${BUILD_NUMBER}"                        
-                        sh "docker build -t ${dockerImageTag} ."                        
-                       
-                        updateValuesYAML('backend.database.image', dockerImageTag)
-                      //  sh "helm upgrade --install backend ${HELM_CHART_PATH}"
+                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_database_mysql:${BUILD_NUMBER}"
+                        sh "docker build -t ${dockerImageTag} ."
+
+                        // Replace the backend.database.image value in values.yaml
+                        sh "sed -i 's|backend.database.image:.*|backend.database.image: ${dockerImageTag}|' ${HELM_CHART_PATH}/values.yaml"
                     }
                 }
             }
         }
-
-        stage('Docker Image push') {
-            steps {
-                    script {
-                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CRED) {
-                        sh "docker push ${dockerImageTag}"
-            }
-                }
-            }
-        } 
-
-
         stage('Build and Package Spring Boot') {
             steps {
                 dir('Inshine/Backend - Inshine') {
                     script {
                         def dockerImageTag = "${DOCKER_REGISTRY}/inshine_backend_springboot:${BUILD_NUMBER}"
                         sh "docker build -t ${dockerImageTag} ."
-                        docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
-                            sh "docker push ${dockerImageTag}"
-                        }
-                        updateValuesYAML('backend.image', dockerImageTag)
-                       // sh "helm upgrade --install backend ${HELM_CHART_PATH}"
+
+                        // Replace the backend.image value in values.yaml
+                        sh "sed -i 's|backend.image:.*|backend.image: ${dockerImageTag}|' ${HELM_CHART_PATH}/values.yaml"
                     }
                 }
             }
         }
-
         stage('Build React-app') {
             steps {
                 dir('Inshine/Frontend - Inshine/reactt') {
                     script {
                         def dockerImageTag = "${DOCKER_REGISTRY}/inshine_frontend_react:${BUILD_NUMBER}"
                         sh "docker build -t ${dockerImageTag} ."
-                        docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
-                            sh "docker push ${dockerImageTag}"
-                        }
-                        updateValuesYAML('frontend.image', dockerImageTag)
-                        // sh "helm upgrade --install frontend ${HELM_CHART_PATH}"
+
+                        // Replace the frontend.image value in values.yaml
+                        sh "sed -i 's|frontend.image:.*|frontend.image: ${dockerImageTag}|' ${HELM_CHART_PATH}/values.yaml"
                     }
                 }
             }
         }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    sh "echo '\${KUBECONFIG}' > /tmp/config"
-                    sh "kubectl --kubeconfig=/tmp/config apply -f your-deployment.yaml"
-                }
-            }
-        }
-        
-
         stage('Deployment app through helm on Kubernetes') {
-            steps {                    
-                    sh "helm upgrade --install inshine ${HELM_CHART_PATH}"
+            steps {
+                sh "helm upgrade --install inshine ${HELM_CHART_PATH}"
             }
         }
-
     }
-}
-
-def updateValuesYAML(key, value) {
-    sh "yq write -i ${HELM_CHART_PATH}/values.yaml ${key} ${value}"
 }
