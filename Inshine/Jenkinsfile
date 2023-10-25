@@ -68,16 +68,6 @@ pipeline {
             }
         }
 
-        stage('RBAC Deployment') {
-            steps {
-                dir('/var/lib/jenkins/workspace/3-tier/helm/inshine') {
-                    script {
-                        // Apply RBAC configuration
-                        sh "kubectl apply -f rbac.yaml"
-                    }
-                }
-            }
-        }
 
         stage('Deploy to Kubernetes') {
             steps {
