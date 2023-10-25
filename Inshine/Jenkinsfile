@@ -32,6 +32,7 @@ pipeline {
                     script {
                         def dockerImageTag = "${DOCKER_REGISTRY}/inshine_database_mysql"
                         sh "docker build -t ${dockerImageTag} ."
+                        sh "docker login -u atulpatil22 -p ${DOCKER_CRED}"
                         sh "docker push ${dockerImageTag}"
 
                         // Replace the backend.database.image value in values.yaml
@@ -47,6 +48,7 @@ pipeline {
                     script {
                         def dockerImageTag = "${DOCKER_REGISTRY}/inshine_backend_springboot"
                         sh "docker build -t ${dockerImageTag} ."
+                        sh "docker login -u atulpatil22 -p ${DOCKER_CRED}"
                         sh "docker push ${dockerImageTag}"
 
                         // Replace the backend.image value in values.yaml
@@ -62,6 +64,7 @@ pipeline {
                     script {
                         def dockerImageTag = "${DOCKER_REGISTRY}/inshine_frontend_react"
                         sh "docker build -t ${dockerImageTag} ."
+                        sh "docker login -u atulpatil22 -p ${DOCKER_CRED}"
                         sh "docker push ${dockerImageTag}"
 
                         // Replace the frontend.image value in values.yaml
