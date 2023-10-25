@@ -30,7 +30,7 @@ pipeline {
             steps {
                 dir('Inshine/Database-MySQL') {
                     script {
-                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_database_mysql:${BUILD_NUMBER}"
+                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_database_mysql"
                         sh "docker build -t ${dockerImageTag} ."
 
                         // Replace the backend.database.image value in values.yaml
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 dir('Inshine/Backend - Inshine') {
                     script {
-                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_backend_springboot:${BUILD_NUMBER}"
+                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_backend_springboot"
                         sh "docker build -t ${dockerImageTag} ."
 
                         // Replace the backend.image value in values.yaml
@@ -58,7 +58,7 @@ pipeline {
             steps {
                 dir('Inshine/Frontend - Inshine/reactt') {
                     script {
-                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_frontend_react:${BUILD_NUMBER}"
+                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_frontend_react"
                         sh "docker build -t ${dockerImageTag} ."
 
                         // Replace the frontend.image value in values.yaml
