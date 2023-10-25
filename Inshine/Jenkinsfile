@@ -32,6 +32,7 @@ pipeline {
                     script {
                         def dockerImageTag = "${DOCKER_REGISTRY}/inshine_database_mysql"
                         sh "docker build -t ${dockerImageTag} ."
+                        sh "docker push ${dockerImageTag} ."
 
                         // Replace the backend.database.image value in values.yaml
                         sh "sed -i 's|backend.database.image:.*|backend.database.image: ${dockerImageTag}|' ${HELM_CHART_PATH}/values.yaml"
@@ -46,6 +47,7 @@ pipeline {
                     script {
                         def dockerImageTag = "${DOCKER_REGISTRY}/inshine_backend_springboot"
                         sh "docker build -t ${dockerImageTag} ."
+                        sh "docker push ${dockerImageTag} ."
 
                         // Replace the backend.image value in values.yaml
                         sh "sed -i 's|backend.image:.*|backend.image: ${dockerImageTag}|' ${HELM_CHART_PATH}/values.yaml"
@@ -60,6 +62,7 @@ pipeline {
                     script {
                         def dockerImageTag = "${DOCKER_REGISTRY}/inshine_frontend_react"
                         sh "docker build -t ${dockerImageTag} ."
+                        sh "docker push ${dockerImageTag} ."
 
                         // Replace the frontend.image value in values.yaml
                         sh "sed -i 's|frontend.image:.*|frontend.image: ${dockerImageTag}|' ${HELM_CHART_PATH}/values.yaml"
