@@ -1,1 +1,1 @@
-export default process.env.BAC_URL
+export default "http://192.168.49.2:30092/"
