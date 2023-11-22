@@ -30,7 +30,7 @@ pipeline {
             steps {
                 dir('Inshine/Database-MySQL') {
                     script {
-                        def dockerImageTag = "${DOCKER_REGISTRY}/mysql_check"
+                        def dockerImageTag = "${DOCKER_REGISTRY}/inshine_database_mysql"
                         sh "docker build -t ${dockerImageTag} ."
                        // sh "docker login -u atulpatil22 -p ${DOCKER_CRED}"
                        // sh "docker push ${dockerImageTag}"
